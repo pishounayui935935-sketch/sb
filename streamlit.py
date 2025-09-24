@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import sqlite3
 import os
-import time
 from datetime import datetime
+from streamlit_autorefresh import st_autorefresh
 
 # -------------------------------------------------
 # CONFIG
@@ -11,7 +11,10 @@ from datetime import datetime
 st.set_page_config(page_title="Debug Oportunidades", layout="wide")
 st.title("🔍 Debug da Base de Dados de Oportunidades")
 
-# Caminho da BD (ajusta se necessário)
+# 🔄 Auto refresh a cada 2 segundos (2000 ms)
+refresh_counter = st_autorefresh(interval=2000, key="datarefresh")
+
+# Caminho da BD
 DB_PATH = os.path.abspath("oportunidades.db")
 st.write("📂 Caminho da BD em uso:", DB_PATH)
 
@@ -56,11 +59,7 @@ if df.empty:
     st.warning("⚠️ Nenhum registo encontrado (ou tabela vazia).")
 else:
     st.subheader("📋 Últimos registos da BD")
-    st.dataframe(df, width="stretch")  # ✅ atualizado
+    st.dataframe(df, width="stretch")
 
 # Mostrar hora da última atualização
 st.caption(f"⏱️ Última atualização: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-# Espera 2 segundos e força rerun
-time.sleep(2)
-st.rerun()
