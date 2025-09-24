@@ -15,7 +15,7 @@ st.title("🔍 Debug da Base de Dados de Oportunidades")
 refresh_counter = st_autorefresh(interval=2000, key="datarefresh")
 
 # Caminho da BD
-DB_PATH = os.path.abspath("oportunidades.db")
+DB_PATH = "oportunidades.db"
 st.write("📂 Caminho da BD em uso:", DB_PATH)
 
 # -------------------------------------------------
