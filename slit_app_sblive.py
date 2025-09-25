@@ -8,15 +8,14 @@ from streamlit_autorefresh import st_autorefresh
 # -------------------------------------------------
 # CONFIG
 # -------------------------------------------------
-st.set_page_config(page_title="Debug Oportunidades", layout="wide")
-st.title("🔍 Debug da Base de Dados de Oportunidades")
+st.set_page_config(page_title="Oportunidades Live", layout="wide")
+st.title("Oportunidades")
 
 # 🔄 Auto refresh a cada 2 segundos (2000 ms)
 refresh_counter = st_autorefresh(interval=2000, key="datarefresh")
 
 # Caminho da BD
 DB_PATH = "oportunidades.db"
-st.write("📂 Caminho da BD em uso:", DB_PATH)
 
 # -------------------------------------------------
 # FUNÇÃO PARA LER DADOS
@@ -42,24 +41,26 @@ def load_preview(limit=10):
     # Contar linhas
     cur.execute("SELECT COUNT(*) FROM oportunidades")
     total = cur.fetchone()[0]
-    st.success(f"📊 Total de linhas na tabela: {total}")
+    
 
     df = pd.read_sql_query(
         f"SELECT * FROM oportunidades ORDER BY id DESC LIMIT {limit}", conn
     )
     conn.close()
-    return df
+    return df, total
 
 # -------------------------------------------------
 # MAIN
 # -------------------------------------------------
-df = load_preview()
+df, total = load_preview()
 
 if df.empty:
     st.warning("⚠️ Nenhum registo encontrado (ou tabela vazia).")
 else:
     st.subheader("📋 Últimos registos da BD")
-    st.dataframe(df, width="stretch")
+    # Mostrar hora da última atualização
+    st.caption(f"⏱️ Última atualização: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    st.dataframe(df, use_container_width=True)  
 
-# Mostrar hora da última atualização
-st.caption(f"⏱️ Última atualização: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    st.success(f"📊 Total de linhas na tabela: {total}")
+
